@@ -96,8 +96,8 @@ bird_collide_with_pipes :: proc(bird: ^Bird, pipe_pair: PipePair, game_state: ^G
 	}
 }
 
-bird_draw :: proc(bird: Bird, sm: SpriteManager, time: f64) {
-	sprite := sm.sprites[bird_animate(sm, time)]
+bird_draw :: proc(bird: Bird, sm: SpriteManager, ba: BirdAnimator) {
+	sprite := sm.sprites[ba.last_texture_name]
 
 	rl.DrawTexturePro(
 		texture = sprite,
@@ -119,26 +119,28 @@ bird_draw :: proc(bird: Bird, sm: SpriteManager, time: f64) {
 	)
 }
 
-prev_time: f64
-last_texture_name := "bird_upflap"
-bird_animate :: proc(sm: SpriteManager, time: f64) -> string {
-	if time - prev_time < BIRD_ANIMATION_FRAME_MS {
-		return last_texture_name
+BirdAnimator :: struct {
+	prev_time:         f64,
+	last_texture_name: string,
+}
+
+ba_init :: proc() -> BirdAnimator {
+	return BirdAnimator{prev_time = 0, last_texture_name = "bird_upflap"}
+}
+
+bird_animate :: proc(ba: ^BirdAnimator, sm: SpriteManager, time: f64) {
+	if time - ba.prev_time < BIRD_ANIMATION_FRAME_MS {
+		return
 	}
 
-	prev_time = time
+	ba.prev_time = time
 
-	switch last_texture_name {
-		case "bird_upflap":
-			last_texture_name = "bird_midflap"
-			return "bird_midflap"
-		case "bird_midflap":
-			last_texture_name = "bird_downflap"
-			return "bird_downflap"
-		case "bird_downflap":
-			last_texture_name = "bird_upflap"
-			return "bird_upflap"
+	switch ba.last_texture_name {
+	case "bird_upflap":
+		ba.last_texture_name = "bird_midflap"
+	case "bird_midflap":
+		ba.last_texture_name = "bird_downflap"
+	case "bird_downflap":
+		ba.last_texture_name = "bird_upflap"
 	}
-
-	return last_texture_name
 }

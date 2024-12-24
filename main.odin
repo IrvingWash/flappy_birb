@@ -11,7 +11,7 @@ main :: proc() {
 }
 
 play :: proc() {
-	game_state, bird, ppg, pipes, background, score := start()
+	game_state, bird, ppg, pipes, background, score, bird_animator := start()
 	sprite_manager := sm_init()
 	load_sprites(&sprite_manager)
 
@@ -19,16 +19,16 @@ play :: proc() {
 		dt := f64(rl.GetFrameTime() * 10)
 		time := rl.GetTime() * 1000
 
-		update(&game_state, &bird, &ppg, &pipes, &score, dt, time)
+		update(&game_state, &bird, &ppg, &pipes, &score, dt, time, sprite_manager, &bird_animator)
 
-		render(game_state, bird, pipes, background, score, sprite_manager, time)
+		render(game_state, bird, pipes, background, score, sprite_manager, bird_animator)
 	}
 
 	sm_destroy(sprite_manager)
 	delete(pipes)
 }
 
-start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Background, Score) {
+start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Background, Score, BirdAnimator) {
 	window_width := uint(rl.GetScreenWidth())
 	window_height := uint(rl.GetScreenHeight())
 
@@ -38,8 +38,9 @@ start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Backg
 	pipes: [dynamic]PipePair
 	background := bkg_init(window_width, window_height)
 	score := score_init()
+	ba := ba_init()
 
-	return game_state, bird, ppg, pipes, background, score
+	return game_state, bird, ppg, pipes, background, score, ba
 }
 
 update :: proc(
@@ -50,6 +51,8 @@ update :: proc(
 	score: ^Score,
 	dt: f64,
 	time: f64,
+	sm: SpriteManager,
+	ba: ^BirdAnimator,
 ) {
 	window_width := uint(rl.GetScreenWidth())
 	window_height := uint(rl.GetScreenHeight())
@@ -61,6 +64,7 @@ update :: proc(
 	if game_state^ == GameState.Play {
 		bird_move(bird, dt)
 		bird_collide_with_world_edges(bird, window_height, game_state)
+		bird_animate(ba, sm, time)
 
 		for pipe_pair in pipes {
 			bird_collide_with_pipes(bird, pipe_pair, game_state)
@@ -86,7 +90,7 @@ render :: proc(
 	background: Background,
 	score: Score,
 	sm: SpriteManager,
-	time: f64,
+	ba: BirdAnimator,
 ) {
 	window_width := uint(rl.GetScreenWidth())
 	window_height := uint(rl.GetScreenHeight())
@@ -100,7 +104,7 @@ render :: proc(
 		pipe_pair_draw(pipe_pair, sm)
 	}
 
-	bird_draw(bird, sm, time)
+	bird_draw(bird, sm, ba)
 
 	draw_score(score, window_height)
 
