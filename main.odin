@@ -29,7 +29,7 @@ start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair) {
 
     game_state := game_state_init()
     bird := bird_init(window_width, window_height)
-    ppg := PipePairGenerator{}
+    ppg := ppg_init()
     pipes: [dynamic]PipePair
 
     return game_state, bird, ppg, pipes
@@ -51,9 +51,9 @@ update :: proc(game_state: ^GameState, bird: ^Bird, ppg: ^PipePairGenerator, pip
             pipe_pair_move(&pipe_pair, dt)
         }
 
-        pipe_pair, ok := ppg_generate(ppg, window_width, window_height, time).?
+        new_pipe_pair, ok := ppg_generate(ppg, window_width, window_height, time).?
         if ok {
-            append(pipes, pipe_pair)
+            append(pipes, new_pipe_pair)
         }
     }
 }

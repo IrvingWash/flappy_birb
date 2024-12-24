@@ -1,5 +1,6 @@
 package flappy_bird
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 Pipe :: struct {
@@ -30,7 +31,7 @@ ppg_init :: proc() -> PipePairGenerator {
 }
 
 ppg_generate :: proc(ppg: ^PipePairGenerator, window_width: uint, window_height: uint, time: f64) -> Maybe(PipePair) {
-    if time - ppg.prev_time < ppg.delay {
+    if (time - ppg.prev_time) <= ppg.delay {
         return nil
     }
 
@@ -72,8 +73,8 @@ ppg_generate :: proc(ppg: ^PipePairGenerator, window_width: uint, window_height:
 }
 
 pipe_pair_move :: proc(pipe_pair: ^PipePair, dt: f64) {
-    pipe_pair.upper.position.x += pipe_pair.speed * dt
-    pipe_pair.lower.position.x += pipe_pair.speed * dt
+    pipe_pair.upper.position.x -= pipe_pair.speed * dt
+    pipe_pair.lower.position.x -= pipe_pair.speed * dt
 }
 
 pipe_pair_draw :: proc(pipe_pair: PipePair) {
