@@ -31,7 +31,7 @@ bird_init :: proc(window_width: uint, window_height: uint) -> Bird {
 }
 
 bird_move :: proc(bird: ^Bird, dt: f64) {
-    bird.velocity.y = BIRD_GRAVITY
+    bird.velocity.y += BIRD_GRAVITY
 
     if rl.IsKeyDown(rl.KeyboardKey.SPACE) {
         bird.velocity.y = -bird.speed

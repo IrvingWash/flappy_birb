@@ -75,7 +75,7 @@ render :: proc(game_state: GameState, bird: Bird, pipes: [dynamic]PipePair, back
     rl.BeginDrawing()
     rl.ClearBackground(CLEAR_COLOR)
 
-    bkg_draw(background, sm)
+    bkg_draw(background, sm, window_width, window_height)
 
     for pipe_pair in pipes {
         pipe_pair_draw(pipe_pair)

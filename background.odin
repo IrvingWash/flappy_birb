@@ -17,7 +17,7 @@ bkg_init :: proc(window_width, window_height: uint) -> Background {
     }
 }
 
-bkg_draw :: proc(bkg: Background, sm: SpriteManager) {
+bkg_draw :: proc(bkg: Background, sm: SpriteManager, window_width, window_height: uint) {
     texture := sm.sprites["bkg"]
 
     rl.DrawTexturePro(
@@ -29,8 +29,8 @@ bkg_draw :: proc(bkg: Background, sm: SpriteManager) {
             height = f32(texture.height),
         },
         dest = rl.Rectangle{
-            x = f32(bkg.position.x),
-            y = f32(bkg.position.y),
+            x = f32(window_width / 2),
+            y = f32(window_height / 2),
             width = f32(texture.width * BKG_SCALE),
             height = f32(texture.height * BKG_SCALE),
         },
