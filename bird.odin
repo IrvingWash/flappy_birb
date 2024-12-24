@@ -1,5 +1,6 @@
 package flappy_bird
 
+import "core:math"
 import rl "vendor:raylib"
 
 Bird :: struct {
@@ -30,6 +31,8 @@ bird_move :: proc(bird: ^Bird, dt: f64) {
 	if rl.IsKeyDown(rl.KeyboardKey.SPACE) {
 		bird.velocity.y = -bird.speed
 	}
+
+	bird.rotation = math.clamp(-45, math.atan(bird.velocity.y) * 50, 90)
 
 	add_vector2_in_place(&bird.position, scale_vector2(bird.velocity, dt))
 }
@@ -89,16 +92,28 @@ bird_collide_with_pipes :: proc(bird: ^Bird, pipe_pair: PipePair, game_state: ^G
 	}
 }
 
-bird_draw :: proc(bird: Bird) {
-	rl.DrawRectanglePro(
-		rl.Rectangle {
+bird_draw :: proc(bird: Bird, sm: SpriteManager) {
+	sprite := sm.sprites["bird_midflap"]
+
+	rl.DrawTexturePro(
+		texture = sprite,
+		source = rl.Rectangle{
+			x = 0,
+			y = 0,
+			width = f32(sprite.width),
+			height = f32(sprite.height),
+		},
+		dest = rl.Rectangle{
 			x = f32(bird.position.x),
 			y = f32(bird.position.y),
-			width = f32(bird.size.x * bird.scale),
-			height = f32(bird.size.y * bird.scale),
+			width = f32(bird.size.x),
+			height = f32(bird.size.y),
 		},
-		rl.Vector2{f32(bird.size.x * bird.scale / 2), f32(bird.size.x * bird.scale / 2)},
-		f32(bird.rotation),
-		bird.color,
+		origin = rl.Vector2{
+			f32(bird.size.x * BIRD_SCALE / 2),
+			f32(bird.size.y * BIRD_SCALE / 2),
+		},
+		rotation = f32(bird.rotation),
+		tint = rl.WHITE,
 	)
 }

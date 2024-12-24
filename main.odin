@@ -94,7 +94,7 @@ render :: proc(
 		pipe_pair_draw(pipe_pair)
 	}
 
-	bird_draw(bird)
+	bird_draw(bird, sm)
 
 	if game_state == GameState.Start {
 		game_state_draw_start(window_width, window_height)
