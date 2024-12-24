@@ -11,7 +11,9 @@ main :: proc() {
 }
 
 play :: proc() {
-    game_state, bird, ppg, pipes := start()
+    game_state, bird, ppg, pipes, background := start()
+    sprite_manager := sm_init()
+    load_sprites(&sprite_manager)
 
     for !rl.WindowShouldClose() {
         dt := f64(rl.GetFrameTime() * 10)
@@ -19,11 +21,14 @@ play :: proc() {
 
         update(&game_state, &bird, &ppg, &pipes, dt, time)
 
-        render(game_state, bird, pipes)
+        render(game_state, bird, pipes, background, sprite_manager)
     }
+
+    sm_destroy(sprite_manager)
+    delete(pipes)
 }
 
-start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair) {
+start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Background) {
     window_width := uint(rl.GetScreenWidth())
     window_height := uint(rl.GetScreenHeight())
 
@@ -31,8 +36,9 @@ start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair) {
     bird := bird_init(window_width, window_height)
     ppg := ppg_init()
     pipes: [dynamic]PipePair
+    background := bkg_init(window_width, window_height)
 
-    return game_state, bird, ppg, pipes
+    return game_state, bird, ppg, pipes, background
 }
 
 update :: proc(game_state: ^GameState, bird: ^Bird, ppg: ^PipePairGenerator, pipes: ^[dynamic]PipePair, dt: f64, time: f64) {
@@ -62,12 +68,14 @@ update :: proc(game_state: ^GameState, bird: ^Bird, ppg: ^PipePairGenerator, pip
     }
 }
 
-render :: proc(game_state: GameState, bird: Bird, pipes: [dynamic]PipePair) {
+render :: proc(game_state: GameState, bird: Bird, pipes: [dynamic]PipePair, background: Background, sm: SpriteManager) {
     window_width := uint(rl.GetScreenWidth())
     window_height := uint(rl.GetScreenHeight())
 
     rl.BeginDrawing()
     rl.ClearBackground(CLEAR_COLOR)
+
+    bkg_draw(background, sm)
 
     for pipe_pair in pipes {
         pipe_pair_draw(pipe_pair)
@@ -84,4 +92,8 @@ render :: proc(game_state: GameState, bird: Bird, pipes: [dynamic]PipePair) {
     }
 
     rl.EndDrawing()
+}
+
+load_sprites :: proc(sm: ^SpriteManager) {
+    sm_load_sprite(sm, "bkg", "assets/background_day.png")
 }
