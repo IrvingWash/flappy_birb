@@ -52,6 +52,43 @@ bird_collide_with_world_edges :: proc(bird: ^Bird, window_height: uint, game_sta
     }
 }
 
+bird_collide_with_pipes :: proc(bird: ^Bird, pipe_pair: PipePair, game_state: ^GameState) {
+    bird_collider := rl.Rectangle{
+        x = f32(bird.position.x - bird.size.x / 2),
+        y = f32(bird.position.y - bird.size.y / 2),
+        width = f32(bird.size.x),
+        height = f32(bird.size.y),
+    }
+
+    using pipe_pair
+
+    is_colliding_with_upper := rl.CheckCollisionRecs(
+        bird_collider,
+        rl.Rectangle {
+            x = f32(upper.position.x - upper.size.x / 2),
+            y = f32(upper.position.y - upper.size.y / 2),
+            width = f32(upper.size.x),
+            height = f32(upper.size.y),
+        }
+    )
+
+    if is_colliding_with_upper {
+        game_state^ = GameState.GameOver
+
+        return
+    }
+
+    is_colliding_with_lower := rl.CheckCollisionRecs(
+        bird_collider,
+        rl.Rectangle {
+            x = f32(lower.position.x - lower.size.x / 2),
+            y = f32(lower.position.y - lower.size.y / 2),
+            width = f32(lower.size.x),
+            height = f32(lower.size.y),
+        }
+    )
+}
+
 bird_draw :: proc(bird: Bird) {
     rl.DrawRectanglePro(
         rl.Rectangle{

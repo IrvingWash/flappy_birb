@@ -47,6 +47,10 @@ update :: proc(game_state: ^GameState, bird: ^Bird, ppg: ^PipePairGenerator, pip
         bird_move(bird, dt)
         bird_collide_with_world_edges(bird, window_height, game_state)
 
+        for pipe_pair in pipes {
+            bird_collide_with_pipes(bird, pipe_pair, game_state)
+        }
+
         for &pipe_pair in pipes {
             pipe_pair_move(&pipe_pair, dt)
         }
@@ -65,11 +69,11 @@ render :: proc(game_state: GameState, bird: Bird, pipes: [dynamic]PipePair) {
     rl.BeginDrawing()
     rl.ClearBackground(CLEAR_COLOR)
 
-    bird_draw(bird)
-
     for pipe_pair in pipes {
         pipe_pair_draw(pipe_pair)
     }
+
+    bird_draw(bird)
 
     if game_state == GameState.Start {
         game_state_draw_start(window_width, window_height)
