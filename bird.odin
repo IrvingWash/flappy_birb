@@ -32,7 +32,11 @@ bird_move :: proc(bird: ^Bird, dt: f64) {
 		bird.velocity.y = -bird.speed
 	}
 
-	bird.rotation = math.clamp(-45, math.atan(bird.velocity.y) * 50, 90)
+	bird.rotation = math.clamp(
+		BIRD_MAX_UP_ROTATION,
+		math.to_degrees(math.atan(bird.velocity.y / 10)),
+		BIRD_MAX_DOWN_ROTATION,
+	)
 
 	add_vector2_in_place(&bird.position, scale_vector2(bird.velocity, dt))
 }
@@ -97,22 +101,19 @@ bird_draw :: proc(bird: Bird, sm: SpriteManager) {
 
 	rl.DrawTexturePro(
 		texture = sprite,
-		source = rl.Rectangle{
+		source = rl.Rectangle {
 			x = 0,
 			y = 0,
 			width = f32(sprite.width),
 			height = f32(sprite.height),
 		},
-		dest = rl.Rectangle{
+		dest = rl.Rectangle {
 			x = f32(bird.position.x),
 			y = f32(bird.position.y),
 			width = f32(bird.size.x),
 			height = f32(bird.size.y),
 		},
-		origin = rl.Vector2{
-			f32(bird.size.x * BIRD_SCALE / 2),
-			f32(bird.size.y * BIRD_SCALE / 2),
-		},
+		origin = rl.Vector2{f32(bird.size.x * BIRD_SCALE / 2), f32(bird.size.y * BIRD_SCALE / 2)},
 		rotation = f32(bird.rotation),
 		tint = rl.WHITE,
 	)
