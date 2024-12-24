@@ -1,6 +1,5 @@
 package flappy_bird
 
-import "core:fmt"
 import rl "vendor:raylib"
 
 main :: proc() {
@@ -12,36 +11,49 @@ main :: proc() {
 }
 
 play :: proc() {
-    bird := start()
+    game_state, bird := start()
 
     for !rl.WindowShouldClose() {
         dt := f64(rl.GetFrameTime() * 10)
 
-        fmt.println(bird)
+        update(&game_state, &bird, dt)
 
-        update(&bird, dt)
-        render(bird)
+        render(game_state, bird)
     }
 }
 
-start :: proc() -> (Bird) {
+start :: proc() -> (GameState, Bird) {
     window_width := uint(rl.GetScreenWidth())
     window_height := uint(rl.GetScreenHeight())
 
+    game_state := game_state_init()
     bird := bird_init(window_width, window_height)
 
-    return bird
+    return game_state, bird
 }
 
-update :: proc(bird: ^Bird, dt: f64) {
-    bird_move(bird, dt)
+update :: proc(game_state: ^GameState, bird: ^Bird, dt: f64) {
+    if game_state^ == GameState.Start {
+        game_state_toggle_play(game_state)
+    }
+
+    if game_state^ == GameState.Play {
+        bird_move(bird, dt)
+    }
 }
 
-render :: proc(bird: Bird) {
+render :: proc(game_state: GameState, bird: Bird) {
+    window_width := uint(rl.GetScreenWidth())
+    window_height := uint(rl.GetScreenHeight())
+
     rl.BeginDrawing()
     rl.ClearBackground(CLEAR_COLOR)
 
     bird_draw(bird)
+
+    if game_state == GameState.Start {
+        game_state_start_draw(window_width, window_height)
+    }
 
     rl.EndDrawing()
 }
