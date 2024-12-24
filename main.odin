@@ -109,4 +109,7 @@ render :: proc(
 
 load_sprites :: proc(sm: ^SpriteManager) {
 	sm_load_sprite(sm, "bkg", "assets/background_day.png")
+	sm_load_sprite(sm, "bird_upflap", "assets/yellowbird_upflap.png")
+	sm_load_sprite(sm, "bird_midflap", "assets/yellowbird_midflap.png")
+	sm_load_sprite(sm, "bird_downflap", "assets/yellowbird_downflap.png")
 }
