@@ -1,6 +1,6 @@
 package flappy_bird
 
-import "core:fmt"
+import "core:math/rand"
 import rl "vendor:raylib"
 
 Pipe :: struct {
@@ -38,6 +38,8 @@ ppg_generate :: proc(
 	}
 
 	ppg.prev_time = time
+
+	upper_height := rand.float32_range(0, f32(window_height - PIPE_GATE_HEIGHT))
 
 	size := Vector2 {
 		x = PIPE_WIDTH,
@@ -79,7 +81,7 @@ pipe_pair_draw :: proc(pipe_pair: PipePair, sm: SpriteManager) {
 			x = 0,
 			y = 0,
 			width = f32(sprite.width),
-			height = f32(upper.size.y),
+			height = f32(sprite.height),
 		},
 		dest = rl.Rectangle{
 			x = f32(upper.position.x),
@@ -101,7 +103,7 @@ pipe_pair_draw :: proc(pipe_pair: PipePair, sm: SpriteManager) {
 			x = 0,
 			y = 0,
 			width = f32(sprite.width),
-			height = f32(lower.size.y),
+			height = f32(sprite.height),
 		},
 		dest = rl.Rectangle{
 			x = f32(lower.position.x),
