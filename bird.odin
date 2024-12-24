@@ -87,6 +87,12 @@ bird_collide_with_pipes :: proc(bird: ^Bird, pipe_pair: PipePair, game_state: ^G
             height = f32(lower.size.y),
         }
     )
+
+    if is_colliding_with_lower {
+        game_state^ = GameState.GameOver
+
+        return
+    }
 }
 
 bird_draw :: proc(bird: Bird) {
