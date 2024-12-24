@@ -56,12 +56,12 @@ ppg_generate :: proc(ppg: ^PipePairGenerator, window_width: uint, window_height:
     lower := Pipe {
         position = Vector2{
             x = f64(window_width),
-            y = (f64(window_height) - size.y) / 2,
+            y = (f64(window_height) - size.y / 2),
         },
         scale = PIPE_SCALE,
         size = size,
         rotation = 0,
-        color = PIPE_COLOR,
+        color = rl.RED,
     }
 
     return PipePair{
