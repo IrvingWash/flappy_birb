@@ -33,12 +33,15 @@ start :: proc() -> (GameState, Bird) {
 }
 
 update :: proc(game_state: ^GameState, bird: ^Bird, dt: f64) {
+    window_height := uint(rl.GetScreenHeight())
+
     if game_state^ == GameState.Start {
         game_state_toggle_play(game_state)
     }
 
     if game_state^ == GameState.Play {
         bird_move(bird, dt)
+        bird_collide_with_world_edges(bird, window_height)
     }
 }
 

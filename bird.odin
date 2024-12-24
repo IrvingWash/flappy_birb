@@ -56,3 +56,9 @@ bird_draw :: proc(bird: Bird) {
         bird.color,
     )
 }
+
+bird_collide_with_world_edges :: proc(bird: ^Bird, window_height: uint) {
+    if bird.position.y - bird.size.y / 2 <= 0 {
+        bird.position.y = bird.size.y / 2
+    }
+}
