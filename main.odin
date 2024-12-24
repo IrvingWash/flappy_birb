@@ -91,7 +91,7 @@ render :: proc(
 	bkg_draw(background, sm, window_width, window_height)
 
 	for pipe_pair in pipes {
-		pipe_pair_draw(pipe_pair)
+		pipe_pair_draw(pipe_pair, sm)
 	}
 
 	bird_draw(bird, sm)
@@ -112,4 +112,5 @@ load_sprites :: proc(sm: ^SpriteManager) {
 	sm_load_sprite(sm, "bird_upflap", "assets/yellowbird_upflap.png")
 	sm_load_sprite(sm, "bird_midflap", "assets/yellowbird_midflap.png")
 	sm_load_sprite(sm, "bird_downflap", "assets/yellowbird_downflap.png")
+	sm_load_sprite(sm, "pipe", "assets/pipe_green.png")
 }

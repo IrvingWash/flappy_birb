@@ -68,36 +68,52 @@ pipe_pair_move :: proc(pipe_pair: ^PipePair, dt: f64) {
 	pipe_pair.lower.position.x -= pipe_pair.speed * dt
 }
 
-pipe_pair_draw :: proc(pipe_pair: PipePair) {
+pipe_pair_draw :: proc(pipe_pair: PipePair, sm: SpriteManager) {
 	using pipe_pair
 
-	rl.DrawRectanglePro(
-		rec = rl.Rectangle {
+	sprite := sm.sprites["pipe"]
+
+	rl.DrawTexturePro(
+		texture = sprite,
+		source = rl.Rectangle{
+			x = 0,
+			y = 0,
+			width = f32(sprite.width),
+			height = f32(upper.size.y),
+		},
+		dest = rl.Rectangle{
 			x = f32(upper.position.x),
 			y = f32(upper.position.y),
-			width = f32(upper.size.x * upper.scale),
-			height = f32(upper.size.y * upper.scale),
+			width = f32(upper.size.x),
+			height = f32(upper.size.y),
 		},
-		origin = rl.Vector2 {
-			f32(upper.size.x * upper.scale / 2),
-			f32(upper.size.y * upper.scale / 2),
+		origin = rl.Vector2{
+			f32(upper.size.x * PIPE_SCALE / 2),
+			f32(upper.size.y * PIPE_SCALE / 2),
 		},
-		rotation = f32(upper.rotation),
-		color = upper.color,
+		rotation = 180,
+		tint = rl.WHITE,
 	)
 
-	rl.DrawRectanglePro(
-		rec = rl.Rectangle {
+	rl.DrawTexturePro(
+		texture = sprite,
+		source = rl.Rectangle{
+			x = 0,
+			y = 0,
+			width = f32(sprite.width),
+			height = f32(lower.size.y),
+		},
+		dest = rl.Rectangle{
 			x = f32(lower.position.x),
 			y = f32(lower.position.y),
-			width = f32(lower.size.x * lower.scale),
-			height = f32(lower.size.y * lower.scale),
+			width = f32(lower.size.x),
+			height = f32(lower.size.y),
 		},
-		origin = rl.Vector2 {
-			f32(lower.size.x * lower.scale / 2),
-			f32(lower.size.y * lower.scale / 2),
+		origin = rl.Vector2{
+			f32(lower.size.x * PIPE_SCALE / 2),
+			f32(lower.size.y * PIPE_SCALE / 2),
 		},
-		rotation = f32(lower.rotation),
-		color = lower.color,
+		rotation = 0,
+		tint = rl.WHITE,
 	)
 }
