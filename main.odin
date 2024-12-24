@@ -41,7 +41,7 @@ update :: proc(game_state: ^GameState, bird: ^Bird, dt: f64) {
 
     if game_state^ == GameState.Play {
         bird_move(bird, dt)
-        bird_collide_with_world_edges(bird, window_height)
+        bird_collide_with_world_edges(bird, window_height, game_state)
     }
 }
 
@@ -55,7 +55,11 @@ render :: proc(game_state: GameState, bird: Bird) {
     bird_draw(bird)
 
     if game_state == GameState.Start {
-        game_state_start_draw(window_width, window_height)
+        game_state_draw_start(window_width, window_height)
+    }
+
+    if game_state == GameState.GameOver {
+        game_state_draw_game_over(window_width, window_height)
     }
 
     rl.EndDrawing()

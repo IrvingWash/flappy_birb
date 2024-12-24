@@ -57,8 +57,14 @@ bird_draw :: proc(bird: Bird) {
     )
 }
 
-bird_collide_with_world_edges :: proc(bird: ^Bird, window_height: uint) {
+bird_collide_with_world_edges :: proc(bird: ^Bird, window_height: uint, game_state: ^GameState) {
     if bird.position.y - bird.size.y / 2 <= 0 {
         bird.position.y = bird.size.y / 2
+
+        return
+    }
+
+    if bird.position.y + bird.size.y / 2 >= f64(window_height) {
+        game_state^ = GameState.GameOver
     }
 }
