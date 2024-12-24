@@ -39,25 +39,28 @@ ppg_generate :: proc(
 
 	ppg.prev_time = time
 
-	upper_height := rand.float32_range(0, f32(window_height - PIPE_GATE_HEIGHT))
-
-	size := Vector2 {
-		x = PIPE_WIDTH,
-		y = f64(window_height - PIPE_GATE_HEIGHT) / 2,
-	}
+	upper_height := rand.float64_range(0, f64(window_height - PIPE_GATE_HEIGHT))
 
 	upper := Pipe {
-		position = Vector2{x = f64(window_width), y = size.y / 2},
+		position = Vector2{x = f64(window_width), y = upper_height / 2},
 		scale = PIPE_SCALE,
-		size = size,
+		size = Vector2{
+			x = PIPE_WIDTH,
+			y = upper_height,
+		},
 		rotation = 180,
 		color = PIPE_COLOR,
 	}
 
+	lower_height: = f64(window_height - PIPE_GATE_HEIGHT) - upper_height
+
 	lower := Pipe {
-		position = Vector2{x = f64(window_width), y = (f64(window_height) - size.y / 2)},
+		position = Vector2{x = f64(window_width), y = f64(window_height) - lower_height / 2},
 		scale = PIPE_SCALE,
-		size = size,
+		size = Vector2{
+			x = PIPE_WIDTH,
+			y = lower_height,
+		},
 		rotation = 0,
 		color = rl.RED,
 	}
