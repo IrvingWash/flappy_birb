@@ -11,7 +11,7 @@ main :: proc() {
 }
 
 play :: proc() {
-	game_state, bird, ppg, pipes, background := start()
+	game_state, bird, ppg, pipes, background, score := start()
 	sprite_manager := sm_init()
 	load_sprites(&sprite_manager)
 
@@ -19,16 +19,16 @@ play :: proc() {
 		dt := f64(rl.GetFrameTime() * 10)
 		time := rl.GetTime() * 1000
 
-		update(&game_state, &bird, &ppg, &pipes, dt, time)
+		update(&game_state, &bird, &ppg, &pipes, &score, dt, time)
 
-		render(game_state, bird, pipes, background, sprite_manager)
+		render(game_state, bird, pipes, background, score, sprite_manager)
 	}
 
 	sm_destroy(sprite_manager)
 	delete(pipes)
 }
 
-start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Background) {
+start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Background, Score) {
 	window_width := uint(rl.GetScreenWidth())
 	window_height := uint(rl.GetScreenHeight())
 
@@ -37,8 +37,9 @@ start :: proc() -> (GameState, Bird, PipePairGenerator, [dynamic]PipePair, Backg
 	ppg := ppg_init()
 	pipes: [dynamic]PipePair
 	background := bkg_init(window_width, window_height)
+	score := score_init()
 
-	return game_state, bird, ppg, pipes, background
+	return game_state, bird, ppg, pipes, background, score
 }
 
 update :: proc(
@@ -46,6 +47,7 @@ update :: proc(
 	bird: ^Bird,
 	ppg: ^PipePairGenerator,
 	pipes: ^[dynamic]PipePair,
+	score: ^Score,
 	dt: f64,
 	time: f64,
 ) {
@@ -72,6 +74,8 @@ update :: proc(
 		if ok {
 			append(pipes, new_pipe_pair)
 		}
+
+		score_update(score, bird^, pipes^)
 	}
 }
 
@@ -80,6 +84,7 @@ render :: proc(
 	bird: Bird,
 	pipes: [dynamic]PipePair,
 	background: Background,
+	score: Score,
 	sm: SpriteManager,
 ) {
 	window_width := uint(rl.GetScreenWidth())
@@ -95,6 +100,8 @@ render :: proc(
 	}
 
 	bird_draw(bird, sm)
+
+	draw_score(score, window_height)
 
 	if game_state == GameState.Start {
 		game_state_draw_start(window_width, window_height)

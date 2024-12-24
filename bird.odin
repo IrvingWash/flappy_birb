@@ -55,10 +55,10 @@ bird_collide_with_world_edges :: proc(bird: ^Bird, window_height: uint, game_sta
 
 bird_collide_with_pipes :: proc(bird: ^Bird, pipe_pair: PipePair, game_state: ^GameState) {
 	bird_collider := rl.Rectangle {
-		x      = f32(bird.position.x - bird.size.x / 2),
-		y      = f32(bird.position.y - bird.size.y / 2),
-		width  = f32(bird.size.x),
-		height = f32(bird.size.y),
+		x      = f32(bird.position.x - (bird.size.x - BIRD_COLLIDER_OFFSET) / 2),
+		y      = f32(bird.position.y - (bird.size.y - BIRD_COLLIDER_OFFSET) / 2),
+		width  = f32(bird.size.x) - BIRD_COLLIDER_OFFSET,
+		height = f32(bird.size.y) - BIRD_COLLIDER_OFFSET,
 	}
 
 	using pipe_pair
