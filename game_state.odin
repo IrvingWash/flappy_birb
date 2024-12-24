@@ -5,7 +5,6 @@ import rl "vendor:raylib"
 GameState :: enum {
     Start,
     Play,
-    Win,
     GameOver,
 }
 
