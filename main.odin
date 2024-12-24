@@ -21,7 +21,7 @@ play :: proc() {
 
 		update(&game_state, &bird, &ppg, &pipes, &score, dt, time)
 
-		render(game_state, bird, pipes, background, score, sprite_manager)
+		render(game_state, bird, pipes, background, score, sprite_manager, time)
 	}
 
 	sm_destroy(sprite_manager)
@@ -86,6 +86,7 @@ render :: proc(
 	background: Background,
 	score: Score,
 	sm: SpriteManager,
+	time: f64,
 ) {
 	window_width := uint(rl.GetScreenWidth())
 	window_height := uint(rl.GetScreenHeight())
@@ -99,7 +100,7 @@ render :: proc(
 		pipe_pair_draw(pipe_pair, sm)
 	}
 
-	bird_draw(bird, sm)
+	bird_draw(bird, sm, time)
 
 	draw_score(score, window_height)
 

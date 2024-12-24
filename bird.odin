@@ -96,8 +96,8 @@ bird_collide_with_pipes :: proc(bird: ^Bird, pipe_pair: PipePair, game_state: ^G
 	}
 }
 
-bird_draw :: proc(bird: Bird, sm: SpriteManager) {
-	sprite := sm.sprites["bird_midflap"]
+bird_draw :: proc(bird: Bird, sm: SpriteManager, time: f64) {
+	sprite := sm.sprites[bird_animate(sm, time)]
 
 	rl.DrawTexturePro(
 		texture = sprite,
@@ -117,4 +117,28 @@ bird_draw :: proc(bird: Bird, sm: SpriteManager) {
 		rotation = f32(bird.rotation),
 		tint = rl.WHITE,
 	)
+}
+
+prev_time: f64
+last_texture_name := "bird_upflap"
+bird_animate :: proc(sm: SpriteManager, time: f64) -> string {
+	if time - prev_time < BIRD_ANIMATION_FRAME_MS {
+		return last_texture_name
+	}
+
+	prev_time = time
+
+	switch last_texture_name {
+		case "bird_upflap":
+			last_texture_name = "bird_midflap"
+			return "bird_midflap"
+		case "bird_midflap":
+			last_texture_name = "bird_downflap"
+			return "bird_downflap"
+		case "bird_downflap":
+			last_texture_name = "bird_upflap"
+			return "bird_upflap"
+	}
+
+	return last_texture_name
 }
